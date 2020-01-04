@@ -2,21 +2,69 @@ package com.company;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 /*
     expr := term (+|-) term (+|-) ... (+|-) term
     term := factor (*|/) factor (* | /) ... (*|/) factor
     factor := INT | "(" expr ")"
  */
+
+class TreeNode {
+    Stack<TreeNode> child;
+    String val;
+
+    public TreeNode(String val) {
+        this.val = val;
+        child = new Stack<>();
+    }
+
+    public static void dfs(TreeNode treeNode) {
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(treeNode);
+        while (q.size() > 0) {
+            int len = q.size();
+            for (int i = 0; i < len; i++) {
+                TreeNode node = q.poll();
+
+                assert node != null;
+                for (TreeNode nodeChild : node.child)
+                    q.offer(nodeChild);
+            }
+        }
+    }
+
+    public String toDepthString(int depth) {
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            str.append("\t");
+        }
+        str.append(val).append("\n");
+        for (TreeNode node : child)
+            str.append(node.toDepthString(depth + 1));
+        return str.toString();
+    }
+
+    @Override
+    public String toString() {
+        return toDepthString(0);
+    }
+}
+
 public class Expression {
     public InputTokenStream ts;
 
     public static void main(String[] args) {
         Expression e = new Expression();
+        TreeNode treeNode = new TreeNode("evalue");
         try {
-            System.out.println(e.evalue());
+            System.out.println(e.evalue(treeNode.child));
+            System.out.println(treeNode);
         } catch (Exception err) {
             System.out.println(err);
+            System.out.println(treeNode);
         }
     }
 
@@ -25,30 +73,43 @@ public class Expression {
     }
 
     // expr := term (+|-) term (+|-) ... (+|-) term
-    public int evalue() throws IOException {
-        int t = term();
+    public int evalue(Stack<TreeNode> treeNodeList) throws IOException {
+        treeNodeList.push(new TreeNode("term"));
+        int t = term(treeNodeList.peek().child);
         Token op = ts.getToken();
         while (op.tokenType == Token.TokenType.PLUS || op.tokenType == Token.TokenType.MINUS) {
             ts.consumeToken();
-            int t2 = term();
+            if (op.tokenType == Token.TokenType.PLUS) {
+                treeNodeList.push(new TreeNode("+"));
+            } else {
+                treeNodeList.push(new TreeNode("-"));
+            }
+            treeNodeList.push(new TreeNode("term"));
+            int t2 = term(treeNodeList.peek().child);
             if (op.tokenType == Token.TokenType.PLUS) {
                 t += t2;
             } else {
                 t -= t2;
             }
-
             op = ts.getToken();
         }
         return t;
     }
 
     // term := factor (*|/) factor (* | /) ... (*|/) factor
-    private int term() throws IOException {
-        int t = factor();
+    private int term(Stack<TreeNode> treeNodeList) throws IOException {
+        treeNodeList.push(new TreeNode("factor"));
+        int t = factor(treeNodeList.peek().child);
         Token op = ts.getToken();
         while (op.tokenType == Token.TokenType.MULT || op.tokenType == Token.TokenType.DIV) {
             ts.consumeToken();
-            int t2 = factor();
+            if (op.tokenType == Token.TokenType.MULT) {
+                treeNodeList.push(new TreeNode("*"));
+            } else {
+                treeNodeList.push(new TreeNode("/"));
+            }
+            treeNodeList.push(new TreeNode("factor"));
+            int t2 = factor(treeNodeList.peek().child);
             if (op.tokenType == Token.TokenType.MULT) {
                 t *= t2;
             } else {
@@ -60,19 +121,24 @@ public class Expression {
     }
 
     // factor := INT | "(" expr ")"
-    private int factor() throws IOException {
+    private int factor(Stack<TreeNode> treeNodeList) throws IOException {
         Token t = ts.getToken();
         if (t.tokenType == Token.TokenType.INT) {
             ts.consumeToken();
+            treeNodeList.push(new TreeNode(t.value.toString()));
             return ((Integer) t.value);
         } else if (t.tokenType == Token.TokenType.LPAR) {
             ts.consumeToken();
-            int v = evalue();
+            treeNodeList.push(new TreeNode("("));
+            treeNodeList.push(new TreeNode("evalue"));
+            int v = evalue(treeNodeList.peek().child);
+            treeNodeList.push(new TreeNode(")"));
             match(ts.getToken(), Token.TokenType.RPAR);
             return v;
         } else if (t.tokenType == Token.TokenType.MINUS) {
             ts.consumeToken();
-            return -factor();
+            treeNodeList.push(new TreeNode("-"));
+            return -factor(treeNodeList.peek().child);
         } else {
             String error = "发生错误！" +
                     "\t错误token为\t" + t +
