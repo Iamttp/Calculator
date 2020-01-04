@@ -3,27 +3,24 @@ package com.company;
 import java.io.IOException;
 import java.io.InputStream;
 
-interface TokenStream {
-    public Token getToken() throws IOException;
+/*
+    引入一个可以把字节流转成Token流的适配器
+    即执行词法分析
+ */
 
-    public void consumeToken();
-
-}
-
-public class InputTokenStream implements TokenStream {
+public class InputTokenStream {
     byte[] buf = new byte[512];
     int n = 0;
     public int pos = 0;
 
     public InputTokenStream(InputStream in) {
         try {
-            n = System.in.read(buf);
+            n = in.read(buf);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
     public Token getToken() throws IOException {
         if (pos >= n) return new Token(Token.TokenType.NONE, null);
 
@@ -50,7 +47,6 @@ public class InputTokenStream implements TokenStream {
             return new Token(Token.TokenType.BLOCK, " ");
     }
 
-    @Override
     public void consumeToken() {
         pos++;
         while (buf[pos] == ' ')

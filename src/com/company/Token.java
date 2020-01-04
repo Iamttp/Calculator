@@ -1,5 +1,8 @@
 package com.company;
 
+/*
+    词法分析需要的Token
+ */
 public class Token {
     public enum TokenType {
         LPAR, RPAR,

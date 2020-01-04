@@ -1,25 +1,25 @@
 package com.company;
 
-import java.io.*;
-
-/**
- * +-------+                      +--------+
- * -- source code --> | lexer | --> token stream --> | parser | --> assembly
- * +-------+                      +--------+
- */
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        System.out.println("please input");
-        TokenStream ts = new InputTokenStream(new BufferedInputStream(System.in)); // 标准输入的适配器
+    static final String filename = "test";
 
-        // 每次getToken都会返回当前游标所指向的那个token，
-        // 每次consumeToken都会使得游标向后移动一位。
-        Token token = ts.getToken();
-        while (token.tokenType != Token.TokenType.NONE) {
-            ts.consumeToken();
-            System.out.println(token);
-            token = ts.getToken();
+    public static void main(String[] args) throws FileNotFoundException {
+        File file = new File(filename);
+        Expression e = new Expression(new FileInputStream(file));
+//        Expression e = new Expression(System.in);
+        TreeNode treeNode = new TreeNode("evalue");
+        try {
+            System.out.println(e.evalue(treeNode.child));
+            System.out.println(treeNode);
+            TreeNode.writeImage("jpg", new File("pic.jpg"), treeNode, "evalue");
+        } catch (Exception err) {
+            System.out.println(err);
+            System.out.println(treeNode);
         }
     }
 }
