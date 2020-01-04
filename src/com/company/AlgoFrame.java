@@ -2,12 +2,9 @@ package com.company;
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
 
 import static com.company.Main.filename;
 import static com.company.Util.readSrc;
@@ -42,15 +39,6 @@ public class AlgoFrame extends JFrame {
         this(title, 1024, 768, treeNode, info);
     }
 
-    public int getCanvasWidth() {
-        return canvasWidth;
-    }
-
-    public int getCanvasHeight() {
-        return canvasHeight;
-    }
-
-
     private class AlgoCanvas extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
@@ -72,16 +60,14 @@ public class AlgoFrame extends JFrame {
         String str = readSrc(filename);
         TreeNode treeNode = new TreeNode("evalue");
         AlgoFrame algoFrame = new AlgoFrame("", 1800, 1000, treeNode, str);
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    while (true) {
-                        algoFrame.repaint();
-                        Thread.sleep(100);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        new Thread(() -> {
+            try {
+                while (true) {
+                    algoFrame.repaint();
+                    Thread.sleep(100);
                 }
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
         }).start();
 
