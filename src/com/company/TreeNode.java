@@ -19,7 +19,7 @@ public class TreeNode {
 
     static final int WIDTH = 2000;
     static final int HEIGHT = 2000;
-    static final int FONTSIZE = 40;
+    static final int FONTSIZE = 30;
 
     public TreeNode(String val) {
         this.val = val;
@@ -54,11 +54,20 @@ public class TreeNode {
         BufferedImage bimg = new BufferedImage(WIDTH + 2, HEIGHT + 2, BufferedImage.TYPE_INT_BGR);
         // 拿到画笔
         Graphics2D g = bimg.createGraphics();
+        drawTree(g, treeNode, rootName, HEIGHT, WIDTH,"");
+        // 将画好的图片通过流形式写到硬盘上
+        boolean val = false;
+        try {
+            val = ImageIO.write(bimg, picType, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void drawTree(Graphics2D g, TreeNode treeNode, String rootName, int imgHeight, int imgWidth, String info) {
+        g.setColor(Color.WHITE);
         // 画一个图形系统默认是白色
-        int imgHeight = HEIGHT;
-        g.fillRect(1, 1, WIDTH, imgHeight);
-        // 设置画笔颜色
-        g.setColor(new Color(12, 123, 88));
+        g.fillRect(1, 1, imgWidth, imgHeight);
         int fontSize = FONTSIZE;
         // 设置画笔画出的字体风格
         g.setFont(new Font("隶书", Font.ITALIC, fontSize));
@@ -67,11 +76,21 @@ public class TreeNode {
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         //消除画图锯齿
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g.setColor(new Color(0, 0, 200));
+        g.drawString(info, fontSize, 50);
+        // 设置画笔颜色
+        g.setColor(new Color(12, 123, 88));
+
         // 写一个字符串
-        int margin = 60;
+        int margin = 0;
         int parentY = imgHeight / 2;
         g.drawString(rootName, fontSize, parentY);
         int parentX = computeParentX(rootName, fontSize, fontSize);
+        if (treeNode.child.size() == 0) {
+            g.dispose();
+            return;
+        }
         int heightL2 = (imgHeight - fontSize) / treeNode.child.size();
         for (int i = 0; i < treeNode.child.size(); i++) {
             TreeNode shareHolderDto = treeNode.child.get(i);
@@ -82,7 +101,7 @@ public class TreeNode {
             // g.drawString("注册资本：" + (shareHolderDto.getRegCapital() == null?"-":shareHolderDto.getRegCapital()), parentX + margin, height + heightL2 * i + fontSize);
             // 设置画笔颜色
             g.setColor(new Color(212, 123, 88));
-            g.drawLine(parentX, parentY, parentX + margin, height + heightL2 * i);
+            g.drawLine(parentX-60, parentY, parentX + margin, height + heightL2 * i);
             // 设置画笔颜色
             g.setColor(new Color(12, 123, 88));
             if (shareHolderDto.child != null && !shareHolderDto.child.isEmpty()) {
@@ -92,13 +111,6 @@ public class TreeNode {
         }
         // 释放画笔
         g.dispose();
-        // 将画好的图片通过流形式写到硬盘上
-        boolean val = false;
-        try {
-            val = ImageIO.write(bimg, picType, file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -123,7 +135,7 @@ public class TreeNode {
             g.drawString(name, x, y);
             // 设置画笔颜色
             g.setColor(new Color(212, 123, 88));
-            g.drawLine(parentX, parentY, x, y);
+            g.drawLine(parentX-60, parentY, x, y);
             // 设置画笔颜色
             g.setColor(new Color(12, 123, 88));
             if (shareHolderDto.child != null && !shareHolderDto.child.isEmpty()) {

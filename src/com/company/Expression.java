@@ -15,13 +15,15 @@ import java.util.Stack;
 
 public class Expression {
     public InputTokenStream ts;
+    int delay_time = 500;
 
     public Expression(InputStream in) {
         ts = new InputTokenStream(new BufferedInputStream(in));
     }
 
     // expr := term (+|-) term (+|-) ... (+|-) term
-    public int evalue(Stack<TreeNode> treeNodeList) throws IOException {
+    public int evalue(Stack<TreeNode> treeNodeList) throws IOException, InterruptedException {
+        Thread.sleep(delay_time);
         treeNodeList.push(new TreeNode("term"));
         int t = term(treeNodeList.peek().child);
         Token op = ts.getToken();
@@ -45,7 +47,8 @@ public class Expression {
     }
 
     // term := factor (*|/) factor (* | /) ... (*|/) factor
-    private int term(Stack<TreeNode> treeNodeList) throws IOException {
+    private int term(Stack<TreeNode> treeNodeList) throws IOException, InterruptedException {
+        Thread.sleep(delay_time);
         treeNodeList.push(new TreeNode("factor"));
         int t = factor(treeNodeList.peek().child);
         Token op = ts.getToken();
@@ -69,7 +72,8 @@ public class Expression {
     }
 
     // factor := INT | "(" expr ")"
-    private int factor(Stack<TreeNode> treeNodeList) throws IOException {
+    private int factor(Stack<TreeNode> treeNodeList) throws IOException, InterruptedException {
+        Thread.sleep(delay_time);
         Token t = ts.getToken();
         if (t.tokenType == Token.TokenType.INT) {
             ts.consumeToken();
