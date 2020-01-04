@@ -9,16 +9,13 @@ import java.io.InputStream;
  */
 
 public class InputTokenStream {
-    byte[] buf = new byte[512];
+    byte[] buf;
     int n = 0;
     public int pos = 0;
 
-    public InputTokenStream(InputStream in) {
-        try {
-            n = in.read(buf);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public InputTokenStream(byte[] buf) {
+        this.buf = buf;
+        n = buf.length;
     }
 
     public Token getToken() throws IOException {
@@ -49,7 +46,7 @@ public class InputTokenStream {
 
     public void consumeToken() {
         pos++;
-        while (buf[pos] == ' ')
+        while (pos < n && buf[pos] == ' ')
             pos++;
     }
 }

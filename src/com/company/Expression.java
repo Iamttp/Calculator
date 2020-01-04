@@ -16,9 +16,8 @@ import java.util.Stack;
 public class Expression {
     public InputTokenStream ts;
     int delay_time = 500;
-
-    public Expression(InputStream in) {
-        ts = new InputTokenStream(new BufferedInputStream(in));
+    public Expression(byte[] buf) {
+        ts = new InputTokenStream(buf);
     }
 
     // expr := term (+|-) term (+|-) ... (+|-) term

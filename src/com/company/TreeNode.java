@@ -5,8 +5,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
 
 /*
@@ -54,7 +52,7 @@ public class TreeNode {
         BufferedImage bimg = new BufferedImage(WIDTH + 2, HEIGHT + 2, BufferedImage.TYPE_INT_BGR);
         // 拿到画笔
         Graphics2D g = bimg.createGraphics();
-        drawTree(g, treeNode, rootName, HEIGHT, WIDTH,"");
+        drawTree(g, treeNode, rootName, HEIGHT, WIDTH, "");
         // 将画好的图片通过流形式写到硬盘上
         boolean val = false;
         try {
@@ -101,7 +99,7 @@ public class TreeNode {
             // g.drawString("注册资本：" + (shareHolderDto.getRegCapital() == null?"-":shareHolderDto.getRegCapital()), parentX + margin, height + heightL2 * i + fontSize);
             // 设置画笔颜色
             g.setColor(new Color(212, 123, 88));
-            g.drawLine(parentX-60, parentY, parentX + margin, height + heightL2 * i);
+            g.drawLine(parentX - 60, parentY, parentX + margin, height + heightL2 * i);
             // 设置画笔颜色
             g.setColor(new Color(12, 123, 88));
             if (shareHolderDto.child != null && !shareHolderDto.child.isEmpty()) {
@@ -135,7 +133,7 @@ public class TreeNode {
             g.drawString(name, x, y);
             // 设置画笔颜色
             g.setColor(new Color(212, 123, 88));
-            g.drawLine(parentX-60, parentY, x, y);
+            g.drawLine(parentX - 60, parentY, x, y);
             // 设置画笔颜色
             g.setColor(new Color(12, 123, 88));
             if (shareHolderDto.child != null && !shareHolderDto.child.isEmpty()) {
@@ -155,5 +153,33 @@ public class TreeNode {
      */
     private static int computeParentX(String str, int patentX, int fontSize) {
         return patentX + str.length() * fontSize;
+    }
+
+    public static String getPre(TreeNode treeNode) {
+        StringBuilder res = new StringBuilder();
+        if (treeNode == null) return "";
+        getPre(treeNode, res);
+        return res.toString();
+    }
+
+    public static void getPre(TreeNode treeNode, StringBuilder res) {
+        res.append(treeNode.val).append(" ");
+        for (int i = 0; i < treeNode.child.size(); i++) {
+            getPre(treeNode.child.get(i), res);
+        }
+    }
+
+    public static String getSuf(TreeNode treeNode) {
+        StringBuilder res = new StringBuilder();
+        if (treeNode == null) return "";
+        getSuf(treeNode, res);
+        return res.toString();
+    }
+
+    public static void getSuf(TreeNode treeNode, StringBuilder res) {
+        for (int i = 0; i < treeNode.child.size(); i++) {
+            getSuf(treeNode.child.get(i), res);
+        }
+        res.append(treeNode.val).append(" ");
     }
 }

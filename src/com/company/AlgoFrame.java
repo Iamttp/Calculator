@@ -2,9 +2,7 @@ package com.company;
 
 import java.awt.*;
 import javax.swing.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 
 import static com.company.Main.filename;
 import static com.company.Util.readSrc;
@@ -55,28 +53,30 @@ public class AlgoFrame extends JFrame {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        File file = new File(filename);
-        Expression e = new Expression(new FileInputStream(file));
-        String str = readSrc(filename);
-        TreeNode treeNode = new TreeNode("evalue");
-        AlgoFrame algoFrame = new AlgoFrame("", 1800, 1000, treeNode, str);
-        new Thread(() -> {
-            try {
-                while (true) {
-                    algoFrame.repaint();
-                    Thread.sleep(100);
+        String strAll = readSrc(filename);
+        String[] strArray = strAll.split("\n");
+        for(String str:strArray){
+            TreeNode treeNode = new TreeNode("evalue");
+            Expression e = new Expression(str.getBytes());
+            AlgoFrame algoFrame = new AlgoFrame("", 1800, 1000, treeNode, str);
+            new Thread(() -> {
+                try {
+                    while (true) {
+                        algoFrame.repaint();
+                        Thread.sleep(100);
+                    }
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
                 }
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-        }).start();
+            }).start();
 
-        try {
-            System.out.println(e.evalue(treeNode.child));
-            System.out.println(treeNode);
-        } catch (Exception err) {
-            System.out.println(err);
-            System.out.println(treeNode);
+            try {
+                System.out.println(e.evalue(treeNode.child));
+                System.out.println(treeNode);
+            } catch (Exception err) {
+                System.out.println(err);
+                System.out.println(treeNode);
+            }
         }
     }
 }
