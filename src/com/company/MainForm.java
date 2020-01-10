@@ -1,6 +1,8 @@
 package com.company;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.IOException;
 
@@ -15,21 +17,25 @@ public class MainForm extends JFrame {
     JTextField textField = new JTextField();
     JTextField textField2 = new JTextField();
     MyCanvas canvas = new MyCanvas();
+    // 创建一个滑块，最小值、最大值、初始值 分别为 0、100、10
+    JSlider slider = new JSlider(0, 100, 10);
 
-    private int canvasWidth;
-    private int canvasHeight;
+    int repaintInterval = 100;
+    final int FORMWIDTH = 1800;
+    final int FORMHEIGHT = 1000;
+
+    private int canvasWidth = FORMWIDTH + 500;
+    private int canvasHeight = FORMHEIGHT + 500;
     TreeNode treeNode;
     String str;
     boolean is_begin = false;
+    boolean is_finish = false;
 
-    public MainForm(String title, int canvasWidth, int canvasHeight) {
+    public MainForm(String title) {
         super(title);
 
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
-
         setTitle("");
-        setSize(canvasWidth, canvasHeight + 100);
+        setSize(FORMWIDTH, FORMHEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         JButton button = new JButton("开始分析");
@@ -39,6 +45,7 @@ public class MainForm extends JFrame {
                 return;
             }
 
+            is_finish = false;
             treeNode = new TreeNode("evalue");
             str = textField.getText();
             Expression exp = new Expression(str.getBytes());
@@ -47,6 +54,8 @@ public class MainForm extends JFrame {
             new Thread(() -> {
                 try {
                     textField2.setText(String.valueOf(exp.evalue(treeNode.child)));
+                    Thread.sleep(repaintInterval);
+                    is_finish = true;
                 } catch (IOException | InterruptedException ex) {
                     plainMessage("错误", ex.getMessage());
 //                    ex.printStackTrace();
@@ -56,9 +65,9 @@ public class MainForm extends JFrame {
             // 重绘线程开启
             new Thread(() -> {
                 try {
-                    while (true) {
+                    while (!is_finish) {
                         repaint();
-                        Thread.sleep(100);
+                        Thread.sleep(repaintInterval);
                     }
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
@@ -78,16 +87,38 @@ public class MainForm extends JFrame {
         label2.setText("结果:");
         label2.setFont(new Font("宋体", Font.BOLD, 30));
 
+        // 设置主刻度间隔
+        slider.setMajorTickSpacing(5);
+        // 设置次刻度间隔
+        slider.setMinorTickSpacing(1);
+        // 绘制 刻度 和 标签
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        // 添加刻度改变监听器
+        slider.addChangeListener(e -> {
+            canvasWidth = FORMWIDTH + 500 * slider.getValue() / 10;
+            canvasHeight = FORMHEIGHT + 500 * slider.getValue() / 10;
+            repaint();
+        });
+
+
         JSplitPane jp01 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, label, textField);
         jp01.setResizeWeight(0.01);
         JSplitPane jp02 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, label2, textField2);
         jp02.setResizeWeight(0.01);
         JSplitPane jp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jp01, jp02);
         jp.setResizeWeight(0.5);
-        JSplitPane jp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jp, button);
+        JSplitPane jp03 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jp, slider);
+        jp03.setResizeWeight(0.7);
+        JSplitPane jp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jp03, button);
         jp2.setResizeWeight(0.7);
 
-        JSplitPane jpp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jp2, canvas);
+        canvas.setAutoscrolls(false);
+        JScrollPane js = new JScrollPane(canvas);
+        js.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        js.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        JSplitPane jpp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jp2, js);
         jpp.setResizeWeight(0.01);
 
         Container cp = getContentPane();
@@ -113,6 +144,6 @@ public class MainForm extends JFrame {
     }
 
     public static void main(String[] args) {
-        new MainForm("", 1800, 1000);
+        new MainForm("递归下降分析示例程序 -- iamttp");
     }
 }
