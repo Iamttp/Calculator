@@ -84,7 +84,7 @@ public class Expression {
             treeNodeList.push(new TreeNode("evalue"));
             int v = evalue(treeNodeList.peek().child);
             treeNodeList.push(new TreeNode(")"));
-            match(ts.getToken());
+            match(ts.getToken(),Token.TokenType.RPAR);
             return v;
         } else if (t.tokenType == Token.TokenType.MINUS) {
             ts.consumeToken();
