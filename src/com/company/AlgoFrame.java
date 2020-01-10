@@ -2,11 +2,12 @@ package com.company;
 
 import java.awt.*;
 import javax.swing.*;
-import java.io.*;
 
-import static com.company.Main.filename;
 import static com.company.Util.readSrc;
 
+/**
+ * 用于测试用例，测试文件位于test.txt
+ */
 public class AlgoFrame extends JFrame {
 
     private int canvasWidth;
@@ -52,10 +53,28 @@ public class AlgoFrame extends JFrame {
         }
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        String strAll = readSrc(filename);
+    public static void main(String[] args) {
+//        String strAll = readSrc(filename);
+//        String[] strArray = strAll.split("\n");
+//        for (String str : strArray) {
+//            Expression e = new Expression(str.getBytes());
+//            e.delay_time = 0;
+//            TreeNode treeNode = new TreeNode("evalue");
+//            try {
+//                System.out.println(e.evalue(treeNode.child));
+//                System.out.println(treeNode);
+////            TreeNode.writeImage("jpg", new File("pic.jpg"), treeNode, "evalue");
+//                System.out.println(TreeNode.getPre(treeNode));
+//                System.out.println(TreeNode.getSuf(treeNode));
+//            } catch (IOException | InterruptedException err) {
+//                System.out.println(err);
+//                System.out.println(treeNode);
+//            }
+//        }
+//
+        String strAll = readSrc("test");
         String[] strArray = strAll.split("\n");
-        for(String str:strArray){
+        for (String str : strArray) {
             TreeNode treeNode = new TreeNode("evalue");
             Expression e = new Expression(str.getBytes());
             AlgoFrame algoFrame = new AlgoFrame("", 1800, 1000, treeNode, str);

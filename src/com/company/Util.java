@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+/**
+ * 工具类
+ */
 public class Util {
     static String readSrc(String filename) {
         String str = "";

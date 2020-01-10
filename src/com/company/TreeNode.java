@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Stack;
 
 /*
@@ -16,6 +19,7 @@ import java.util.Stack;
 public class TreeNode {
     Stack<TreeNode> child;
     String val;
+    static ArrayList<Integer> nums_dep = new ArrayList<>();
 
     static final int WIDTH = 2000;
     static final int HEIGHT = 2000;
@@ -65,6 +69,7 @@ public class TreeNode {
     }
 
     public static void drawTree(Graphics2D g, TreeNode treeNode, String rootName, int imgHeight, int imgWidth) {
+        setNums_dep(treeNode);
         g.setColor(Color.WHITE);
         // 画一个图形系统默认是白色
         g.fillRect(1, 1, imgWidth, imgHeight);
@@ -106,6 +111,7 @@ public class TreeNode {
             g.setColor(new Color(12, 123, 88));
             if (shareHolderDto.child != null && !shareHolderDto.child.isEmpty()) {
                 int myX = computeParentX(shareHolderDto.val, parentX + margin, fontSize);
+                // TODO 提前发现某一层结点数，更改 parentHeight
                 drawChildrenTransverse(g, shareHolderDto.child, height + heightL2 * i, heightL2, heightL2 * i, fontSize, margin, myX);
             }
         }
@@ -126,6 +132,7 @@ public class TreeNode {
      * @param parentX      父节点的X坐标
      */
     private static void drawChildrenTransverse(Graphics2D g, Stack<TreeNode> children, int parentY, int parentHeight, int startY, int fontSize, int margin, int parentX) {
+//        System.out.println("parentY:" + parentY + " parentHeight:" + parentHeight);
         int heightLn = parentHeight / children.size();
         for (int i = 0; i < children.size(); i++) {
             TreeNode shareHolderDto = children.get(i);
@@ -141,6 +148,7 @@ public class TreeNode {
             if (shareHolderDto.child != null && !shareHolderDto.child.isEmpty()) {
                 int myX = computeParentX(shareHolderDto.val, x, fontSize);
                 int myStartY = heightLn * i + startY;
+                // TODO
                 drawChildrenTransverse(g, shareHolderDto.child, y, heightLn, myStartY, fontSize, margin, myX);
             }
         }
@@ -183,5 +191,25 @@ public class TreeNode {
             getSuf(treeNode.child.get(i), res);
         }
         res.append(treeNode.val).append(" ");
+    }
+
+    public static void setNums_dep(TreeNode treeNode) {
+        nums_dep.clear();
+
+        Deque<TreeNode> q = new LinkedList<>();
+        q.offer(treeNode);
+        while (!q.isEmpty()) {
+            int len = q.size();
+            nums_dep.add(len);
+            for (int j = 0; j < len; j++) {
+                TreeNode temp = q.peek();
+                q.pop();
+
+                assert temp != null;
+                for (int i = 0; i < temp.child.size(); i++) {
+                    q.offer(temp.child.get(i));
+                }
+            }
+        }
     }
 }

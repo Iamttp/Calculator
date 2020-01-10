@@ -1,13 +1,11 @@
 package com.company;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /*
     引入一个可以把字节流转成Token流的适配器
     即执行词法分析
  */
-
 public class InputTokenStream {
     byte[] buf;
     int n = 0;

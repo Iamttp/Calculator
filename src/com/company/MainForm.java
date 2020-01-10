@@ -6,7 +6,12 @@ import java.io.IOException;
 
 import static com.company.Util.plainMessage;
 
+/**
+ * 用于用户交互的主窗口
+ */
 public class MainForm extends JFrame {
+    JLabel label = new JLabel();
+    JLabel label2 = new JLabel();
     JTextField textField = new JTextField();
     JTextField textField2 = new JTextField();
     MyCanvas canvas = new MyCanvas();
@@ -17,10 +22,6 @@ public class MainForm extends JFrame {
     String str;
     boolean is_begin = false;
 
-    public MainForm(String title) {
-        this(title, 1024, 768);
-    }
-
     public MainForm(String title, int canvasWidth, int canvasHeight) {
         super(title);
 
@@ -28,7 +29,7 @@ public class MainForm extends JFrame {
         this.canvasHeight = canvasHeight;
 
         setTitle("");
-        setSize(canvasWidth, canvasHeight+100);
+        setSize(canvasWidth, canvasHeight + 100);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         JButton button = new JButton("开始分析");
@@ -72,7 +73,16 @@ public class MainForm extends JFrame {
         textField2.setText("");
         textField2.setFont(new Font("宋体", Font.BOLD, 30));
 
-        JSplitPane jp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, textField, textField2);
+        label.setText("输入:");
+        label.setFont(new Font("宋体", Font.BOLD, 30));
+        label2.setText("结果:");
+        label2.setFont(new Font("宋体", Font.BOLD, 30));
+
+        JSplitPane jp01 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, label, textField);
+        jp01.setResizeWeight(0.01);
+        JSplitPane jp02 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, label2, textField2);
+        jp02.setResizeWeight(0.01);
+        JSplitPane jp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jp01, jp02);
         jp.setResizeWeight(0.5);
         JSplitPane jp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jp, button);
         jp2.setResizeWeight(0.7);
@@ -101,7 +111,6 @@ public class MainForm extends JFrame {
             return new Dimension(canvasWidth, canvasHeight);
         }
     }
-
 
     public static void main(String[] args) {
         new MainForm("", 1800, 1000);

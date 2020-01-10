@@ -3,14 +3,12 @@ package com.company;
 import java.io.IOException;
 import java.util.Stack;
 
-/*
+/**
     递归下降方法计算表达式
     expr := term (+|-) term (+|-) ... (+|-) term
     term := factor (*|/) factor (* | /) ... (*|/) factor
     factor := INT | "(" expr ")"
  */
-
-
 public class Expression {
     // 词法分析输入流
     public InputTokenStream ts;
