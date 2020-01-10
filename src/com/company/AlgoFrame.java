@@ -43,7 +43,7 @@ public class AlgoFrame extends JFrame {
             super.paintComponent(g);
 
             Graphics2D g2d = (Graphics2D) g;//强制类型转换
-            TreeNode.drawTree(g2d, treeNode, "evalue", canvasHeight, canvasWidth, info);
+            TreeNode.drawTree(g2d, treeNode, "evalue", canvasHeight, canvasWidth);
         }
 
         @Override
@@ -72,7 +72,7 @@ public class AlgoFrame extends JFrame {
 
             try {
                 System.out.println(e.evalue(treeNode.child));
-                System.out.println(treeNode);
+                // System.out.println(treeNode);
             } catch (Exception err) {
                 System.out.println(err);
                 System.out.println(treeNode);

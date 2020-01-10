@@ -1,5 +1,6 @@
 package com.company;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,5 +21,13 @@ public class Util {
             e.printStackTrace();
         }
         return str;
+    }
+
+    /**
+     * 自定义的消息提示
+     */
+    public static void plainMessage(String title, String message) {
+        JOptionPane.showMessageDialog(null, message, title,
+                JOptionPane.PLAIN_MESSAGE);
     }
 }

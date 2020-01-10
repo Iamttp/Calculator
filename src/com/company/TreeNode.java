@@ -10,6 +10,8 @@ import java.util.Stack;
 /*
     用于保存递归下降中间过程的数据结构
     同时也是一个极为通用的树结构
+
+    zhenchen@ysu.edu.cn
  */
 public class TreeNode {
     Stack<TreeNode> child;
@@ -52,7 +54,7 @@ public class TreeNode {
         BufferedImage bimg = new BufferedImage(WIDTH + 2, HEIGHT + 2, BufferedImage.TYPE_INT_BGR);
         // 拿到画笔
         Graphics2D g = bimg.createGraphics();
-        drawTree(g, treeNode, rootName, HEIGHT, WIDTH, "");
+        drawTree(g, treeNode, rootName, HEIGHT, WIDTH);
         // 将画好的图片通过流形式写到硬盘上
         boolean val = false;
         try {
@@ -62,7 +64,7 @@ public class TreeNode {
         }
     }
 
-    public static void drawTree(Graphics2D g, TreeNode treeNode, String rootName, int imgHeight, int imgWidth, String info) {
+    public static void drawTree(Graphics2D g, TreeNode treeNode, String rootName, int imgHeight, int imgWidth) {
         g.setColor(Color.WHITE);
         // 画一个图形系统默认是白色
         g.fillRect(1, 1, imgWidth, imgHeight);
@@ -75,8 +77,8 @@ public class TreeNode {
         //消除画图锯齿
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g.setColor(new Color(0, 0, 200));
-        g.drawString(info, fontSize, 50);
+//        g.setColor(new Color(0, 0, 200));
+//        g.drawString(info, fontSize, 50);
         // 设置画笔颜色
         g.setColor(new Color(12, 123, 88));
 

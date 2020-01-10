@@ -35,7 +35,7 @@ public class InputTokenStream {
             return new Token(Token.TokenType.DIV, "/");
         else if (buf[pos] >= '0' && buf[pos] <= '9') {
             int val = 0;
-            while (buf[pos] >= '0' && buf[pos] <= '9') {
+            while (pos < n && buf[pos] >= '0' && buf[pos] <= '9') {
                 val = val * 10 + buf[pos++] - '0';
             }
             pos--;
