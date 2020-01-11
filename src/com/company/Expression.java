@@ -4,16 +4,17 @@ import java.io.IOException;
 import java.util.Stack;
 
 /**
-    递归下降方法计算表达式
-    expr := term (+|-) term (+|-) ... (+|-) term
-    term := factor (*|/) factor (* | /) ... (*|/) factor
-    factor := INT | "(" expr ")"
+ * 递归下降方法计算表达式
+ * expr := term (+|-) term (+|-) ... (+|-) term
+ * term := factor (*|/) factor (* | /) ... (*|/) factor
+ * factor := INT | "(" expr ")"
  */
 public class Expression {
     // 词法分析输入流
     public InputTokenStream ts;
     // 用于延时显示
     int delay_time = 500;
+
     public Expression(byte[] buf) {
         ts = new InputTokenStream(buf);
     }
@@ -82,12 +83,8 @@ public class Expression {
             treeNodeList.push(new TreeNode("evalue"));
             int v = evalue(treeNodeList.peek().child);
             treeNodeList.push(new TreeNode(")"));
-            match(ts.getToken(),Token.TokenType.RPAR);
+            match(ts.getToken(), Token.TokenType.RPAR);
             return v;
-        } else if (t.tokenType == Token.TokenType.MINUS) {
-            ts.consumeToken();
-            treeNodeList.push(new TreeNode("-"));
-            return -factor(treeNodeList.peek().child);
         } else {
             String error = "发生错误！" +
                     "\t错误token为\t" + t +

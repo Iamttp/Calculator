@@ -10,36 +10,50 @@ public class InputTokenStream {
     byte[] buf;
     int n = 0;
     public int pos = 0;
+    Token last_token = null;
 
     public InputTokenStream(byte[] buf) {
         this.buf = buf;
         n = buf.length;
     }
 
-    public Token getToken() throws IOException {
-        if (pos >= n) return new Token(Token.TokenType.NONE, null);
+    private Token pushToken(Token.TokenType tt, Object v) {
+        last_token = new Token(tt, v);
+        return last_token;
+    }
+
+    public Token getToken() {
+        if (pos >= n) return pushToken(Token.TokenType.NONE, null);
 
         if (buf[pos] == '(')
-            return new Token(Token.TokenType.LPAR, "(");
+            return pushToken(Token.TokenType.LPAR, "(");
         else if (buf[pos] == ')')
-            return new Token(Token.TokenType.RPAR, ")");
+            return pushToken(Token.TokenType.RPAR, ")");
         else if (buf[pos] == '+')
-            return new Token(Token.TokenType.PLUS, "+");
-        else if (buf[pos] == '-')
-            return new Token(Token.TokenType.MINUS, "-");
+            return pushToken(Token.TokenType.PLUS, "+");
+        else if (buf[pos] == '-' && last_token != null && last_token.tokenType != Token.TokenType.LPAR)
+            return pushToken(Token.TokenType.MINUS, "-");
         else if (buf[pos] == '*')
-            return new Token(Token.TokenType.MULT, "*");
+            return pushToken(Token.TokenType.MULT, "*");
         else if (buf[pos] == '/')
-            return new Token(Token.TokenType.DIV, "/");
+            return pushToken(Token.TokenType.DIV, "/");
         else if (buf[pos] >= '0' && buf[pos] <= '9') {
             int val = 0;
             while (pos < n && buf[pos] >= '0' && buf[pos] <= '9') {
                 val = val * 10 + buf[pos++] - '0';
             }
             pos--;
-            return new Token(Token.TokenType.INT, val);
+            return pushToken(Token.TokenType.INT, val);
+        } else if (buf[pos] == '-') {   // 负数识别
+            pos++;
+            int val = 0;
+            while (pos < n && buf[pos] >= '0' && buf[pos] <= '9') {
+                val = val * 10 + buf[pos++] - '0';
+            }
+            pos--;
+            return pushToken(Token.TokenType.INT, -val);
         } else
-            return new Token(Token.TokenType.BLOCK, " ");
+            return pushToken(Token.TokenType.BLOCK, " ");
     }
 
     public void consumeToken() {

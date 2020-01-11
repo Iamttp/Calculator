@@ -1,8 +1,6 @@
 package com.company;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.IOException;
 
@@ -18,7 +16,7 @@ public class MainForm extends JFrame {
     JTextField textField2 = new JTextField();
     MyCanvas canvas = new MyCanvas();
     // 创建一个滑块，最小值、最大值、初始值 分别为 0、100、10
-    JSlider slider = new JSlider(0, 100, 10);
+    JSlider slider = new JSlider(0, 30, 2);
 
     int repaintInterval = 100;
     final int FORMWIDTH = 1800;
@@ -92,12 +90,12 @@ public class MainForm extends JFrame {
         // 设置次刻度间隔
         slider.setMinorTickSpacing(1);
         // 绘制 刻度 和 标签
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
+//        slider.setPaintTicks(true);
+//        slider.setPaintLabels(true);
         // 添加刻度改变监听器
         slider.addChangeListener(e -> {
-            canvasWidth = FORMWIDTH + 500 * slider.getValue() / 10;
-            canvasHeight = FORMHEIGHT + 500 * slider.getValue() / 10;
+            canvasWidth = FORMWIDTH + 500 * slider.getValue();
+            canvasHeight = FORMHEIGHT + 500 * slider.getValue();
             repaint();
         });
 
